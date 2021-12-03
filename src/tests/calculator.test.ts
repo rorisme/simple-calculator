@@ -47,4 +47,10 @@ test('should handle invalid expressions gracefully', () => {
   const data = getExpressionData(expression);
   const result = expressionReducer(data.numbers, data.operations);
   expect(parseFloat(result)).toEqual(NaN);
+
+  const cmdInput2 = Array.from('--+x12+-2+/4');
+  const expression2 = normalizeInput(cmdInput2);
+  const data2 = getExpressionData(expression2);
+  const result2 = expressionReducer(data2.numbers, data2.operations);
+  expect(parseFloat(result2)).toEqual(NaN);
 });

@@ -1,6 +1,23 @@
 const operators: string[] = ['x', '/', '+', '-'];
 
 /**
+ * Returns true if the passed argument is an operator and false otherwise.
+ * @param arg The argument to search in the input array
+ * @returns
+ */
+function isArgAnOperator(arg: string): boolean {
+  return operators.includes(arg);
+}
+
+function updateInputArray(input: string[], currentArg: string, index: number) {
+  const lastArgIndex = input.length - 1;
+  const lastArg = input[lastArgIndex];
+  index > 0 && !isArgAnOperator(lastArg) && !isArgAnOperator(currentArg)
+    ? input.splice(lastArgIndex, 1, `${lastArg}${currentArg}`)
+    : input.push(currentArg);
+}
+
+/**
  * Normalizes user input. Since the input is first converted into an array of
  * data, multi-digits numbers and decimals will be incorrectly represented;
  * Example: '2+10x4' will become ['2', '+', '1', '0', 'x', '4']. This function
@@ -9,22 +26,13 @@ const operators: string[] = ['x', '/', '+', '-'];
  * @param args Array from the expression string
  * @returns
  */
-export function normalizeInput(args: string[]) {
-  const result: string[] = [];
+export function normalizeInput(args: string[]): string[] {
+  const input: string[] = [];
   if (operators.includes(args[0])) args = ['0'].concat(args);
-  args.map((arg, index) => {
-    const lastItem = result[result.length - 1];
-    if (
-      index > 0 &&
-      !operators.includes(lastItem) &&
-      !operators.includes(arg)
-    ) {
-      result[result.length - 1] = `${lastItem}${arg}`;
-    } else {
-      result.push(arg);
-    }
+  args.forEach((currentArg, index) => {
+    updateInputArray(input, currentArg, index);
   });
-  return result;
+  return input;
 }
 
 /**
@@ -36,7 +44,6 @@ export function normalizeInput(args: string[]) {
 export function getExpressionData(args: string[]) {
   const input: string[] = Array.from(args);
   const numbers = input.filter(entry => !isNaN(parseFloat(entry)));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const operations: any[] = input.filter(entry => !!isNaN(parseFloat(entry)));
+  const operations = input.filter(entry => !!isNaN(parseFloat(entry)));
   return {input, numbers, operations};
 }

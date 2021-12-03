@@ -1,5 +1,42 @@
-import {Operators, OperatorsOrder} from '../types';
-import {calculate} from './calculator';
+import {Operations, OperationsOrder, ICalculator} from '../types';
+import {addition, division, multiplication, subtraction} from './operations';
+
+/**
+ * Return the corresponding operation function
+ * @param operation The operation to be performed
+ * @returns
+ */
+function calculator(operation: Operations): ICalculator | undefined {
+  const operationMapper = new Map<Operations, ICalculator>([
+    [Operations.Addition, {calculate: (a: number, b: number) => a + b}],
+    [Operations.Subtraction, {calculate: (a: number, b: number) => a - b}],
+    [Operations.Multiplication, {calculate: (a: number, b: number) => a * b}],
+    [Operations.Division, {calculate: (a: number, b: number) => a / b}],
+  ]);
+  return operationMapper.get(operation);
+}
+
+/**
+ * Call the appropriate operation function based on input parameters
+ * @param args Array numbers to calculate
+ * @param operation The operation to perform
+ * @returns
+ */
+export function callOperation(
+  args: number[] | string[],
+  operation: Operations
+) {
+  if (!operation) return;
+
+  const operationMapper = new Map<Operations, Function>();
+
+  operationMapper.set(Operations.Addition, addition);
+  operationMapper.set(Operations.Division, division);
+  operationMapper.set(Operations.Subtraction, subtraction);
+  operationMapper.set(Operations.Multiplication, multiplication);
+
+  return operationMapper.get(operation)?.call(null, args);
+}
 
 /**
  * Perform arithmetic operations from an input array of string. This function
@@ -10,26 +47,15 @@ import {calculate} from './calculator';
  */
 export function calculatorReducer(
   args: string[],
-  operation: Operators
+  operation: Operations
 ): string {
-  if (args.length === 0) return '';
-  const result = args.reduce((prev, current) => {
-    const leftHand = parseFloat(prev);
-    const rightHand = parseFloat(current);
-    switch (operation) {
-      case Operators.Addition:
-        return (leftHand + rightHand).toString();
-      case Operators.Subtraction:
-        return (leftHand - rightHand).toString();
-      case Operators.Division:
-        return (leftHand / rightHand).toString();
-      case Operators.Multiplication:
-        return (leftHand * rightHand).toString();
-      default:
-        throw new Error('Invalid operation');
-    }
+  return args.reduce((prev, current) => {
+    const firstNumber = parseFloat(prev);
+    const secondNumber = parseFloat(current);
+    return calculator(operation)
+      ?.calculate(firstNumber, secondNumber)
+      .toString();
   });
-  return result;
 }
 
 /**
@@ -41,17 +67,17 @@ export function calculatorReducer(
  */
 export function expressionReducer(
   numbers: string[],
-  operations: Operators[]
+  operations: string[] | Operations[]
 ): string {
-  OperatorsOrder.forEach(operator => {
-    if (operations.includes(operator)) {
-      const operationIndex = operations.indexOf(operator);
+  OperationsOrder.forEach(operation => {
+    if (operations.includes(operation)) {
+      const operationIndex = operations.indexOf(operation);
       numbers.splice(
         operationIndex,
         2,
-        calculate(
+        callOperation(
           [numbers[operationIndex], numbers[operationIndex + 1]],
-          OperatorsOrder[OperatorsOrder.indexOf(operator)]
+          OperationsOrder[OperationsOrder.indexOf(operation)]
         )
       );
       operations.splice(operationIndex, 1);

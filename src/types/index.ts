@@ -1,20 +1,17 @@
-export enum Operators {
+export enum Operations {
   Addition = '+',
   Division = '/',
   Subtraction = '-',
   Multiplication = 'x',
 }
 
-export enum Operations {
-  Addition = 'Addition',
-  Division = 'Division',
-  Subtraction = 'Subtraction',
-  Multiplication = 'Multiplication',
-}
-
-export const OperatorsOrder: Operators[] = [
-  Operators.Division,
-  Operators.Multiplication,
-  Operators.Addition,
-  Operators.Subtraction,
+export const OperationsOrder: Operations[] = [
+  Operations.Division,
+  Operations.Multiplication,
+  Operations.Addition,
+  Operations.Subtraction,
 ];
+
+export interface ICalculator {
+  calculate: Function;
+}

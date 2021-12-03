@@ -1,4 +1,4 @@
-import {Operators} from '../types';
+import {Operations} from '../types';
 import {calculatorReducer} from './reducers';
 
 /**
@@ -7,7 +7,7 @@ import {calculatorReducer} from './reducers';
  * @returns
  */
 export function division(args: string[]) {
-  return calculatorReducer(args, Operators.Division);
+  return calculatorReducer(args, Operations.Division);
 }
 
 /**
@@ -16,7 +16,7 @@ export function division(args: string[]) {
  * @returns
  */
 export function multiplication(args: string[]) {
-  return calculatorReducer(args, Operators.Multiplication);
+  return calculatorReducer(args, Operations.Multiplication);
 }
 
 /**
@@ -25,7 +25,7 @@ export function multiplication(args: string[]) {
  * @returns
  */
 export function addition(args: string[]) {
-  return calculatorReducer(args, Operators.Addition);
+  return calculatorReducer(args, Operations.Addition);
 }
 
 /**
@@ -34,5 +34,5 @@ export function addition(args: string[]) {
  * @returns
  */
 export function subtraction(args: string[]) {
-  return calculatorReducer(args, Operators.Subtraction);
+  return calculatorReducer(args, Operations.Subtraction);
 }
